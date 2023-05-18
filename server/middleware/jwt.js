@@ -18,3 +18,13 @@ export async function generateAuthToken(user) {
       console.log(err.message);
     }
   }
+
+  export async function verifyUserId(token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = decoded._id;
+      return userId;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }

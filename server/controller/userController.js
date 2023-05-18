@@ -1,4 +1,6 @@
-import { generateAuthToken, verifyToken } from "../middleware/jwt.js";
+import { generateRandomCode } from "../middleware/generateCode.js";
+import { generateAuthToken, verifyToken, verifyUserId } from "../middleware/jwt.js";
+import filemodel from "../model/fileSchema.js";
 import usermodel from "../model/userSchema.js";
 
 export async function userSignUp(req,res,next){
@@ -49,5 +51,21 @@ export async function userDetails(req,res,next){
         res.json({"username":username})
     } catch (error) {
         console.log(error.message);
+    }
+}
+
+export async function addFiles(req,res,next){
+    try {
+        let obj=req.body
+        const userId=await verifyUserId(obj.token)
+        const code=await generateRandomCode()
+        await filemodel.create({
+            userId:userId,
+            file:obj.file,
+            generatedCode:code
+        })
+        res.json({"status":"success","message":"File upload successfully"})
+    } catch (error) {
+        res.json({"status":"failed","message":error.message})
     }
 }
