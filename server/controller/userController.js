@@ -69,3 +69,24 @@ export async function addFiles(req,res,next){
         res.json({"status":"failed","message":error.message})
     }
 }
+
+export async function getFiles(req,res,next){
+    try {
+        const token = req.params.token
+        const userId=await verifyUserId(token)
+        const allFiles=await filemodel.find({userId:userId})
+        res.json({"status":"success","files":allFiles})
+    } catch (error) {
+        res.json({"status":"failed","message":error.message})
+    }
+}
+
+export async function deleteFile(req,res,next){
+    try {
+        const fileId=req.params.fileId
+        await filemodel.findByIdAndDelete(fileId)
+        res.json({"status":"success"})
+    } catch (error) {
+        res.json({"status":"failed","message":error.message})
+    }
+}
